@@ -38,8 +38,11 @@ H->min->right = x;
 ### After
 
 x->right = H->min->right;
+
 x->left = H->min;
+
 H->min->right->left = x;
+
 H->min->right = x;
 
 ## 2) Concatenation Bug in fib_heap_union() function:
@@ -47,20 +50,29 @@ H->min->right = x;
 ### Before
 
 FibNode *H1_right = H1->min->right;
+
 FibNode *H2_left = H2->min->left;
+
 H1->min->right = H2->min;
+
 H2->min->left = H1->min;
+
 H1_right->left = H2_left;
+
 H2_left->right = H1_right;
 
 ### After
 
 FibNode *H1_left = H1->min->left;
+
 FibNode *H2_left = H2->min->left;
 
 H1->min->left = H2_left;
+
 H2_left->right = H1->min;
+
 H2->min->left = H1_left;
+
 H1_left->right = H2->min;
 
 ## 3) Traversal & Array Index Bug  in fib_heap_consolidate() function:
