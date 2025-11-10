@@ -28,8 +28,11 @@ Moreover, we would like to express our sincere gratitude to the Department of Co
 ### Before
 
 x->left = H->min;
+
 x->right = H->min->right;
+
 H->min->right->left = x;
+
 H->min->right = x;
 
 ### After
