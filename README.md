@@ -100,9 +100,13 @@ z->child = NULL; // At Line 161
 After every malloc()/calloc():
 
 if (!H) 
+
 { 
+
 perror("malloc failed"); 
+
 exit(EXIT_FAILURE); 
+
 }
 
 ## 6) Search Limitation Notice:
