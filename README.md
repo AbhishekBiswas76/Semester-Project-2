@@ -77,7 +77,7 @@ H1_left->right = H2->min;
 
 ## 3) Traversal & Array Index Bug  in fib_heap_consolidate() function:
 
-## Before
+### Before
 
 int D = (int)(log(H->n) / log(2)) + 1;
 
