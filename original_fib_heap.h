@@ -1,5 +1,5 @@
-#ifndef FIB_HEAP_H
-#define FIB_HEAP_H
+#ifndef ORIGINAL_FIB_HEAP_H
+#define ORIGINAL_FIB_HEAP_H
 
 #include <stdio.h>
 #include <stdlib.h>
