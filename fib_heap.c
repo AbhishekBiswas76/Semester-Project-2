@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "original_fib_heap.h"
+#include "fib_heap.h"
 #include <limits.h>
 #include <math.h>
 
