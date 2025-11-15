@@ -20,126 +20,194 @@ Firstly, we would like to thank our family and friends for their constant suppor
 Moreover, we would like to express our sincere gratitude to the Department of Computer Science, for allowing us to apply our expertise in this assignment, and for helping us develop the required knowledge to program using the C programming language for this project.
 
 
-# Errors Found:
+# Errors Found & Fixes Applied
 
-## Incorrect Insertion Into Root List In fib_heap_insert() Function
+## 1. Incorrect insertion into root list in fib_heap_insert()
 
-### Problem
-
+### Original:
 x->left = H->min;
 x->right = H->min->right;
 H->min->right->left = x;
 H->min->right = x;
 
-### Fixing
-
+### Fixed:
 x->right = H->min->right;
 x->left  = H->min;
 H->min->right->left = x;
 H->min->right = x;
 
-## Incorrect Consolidation Traversal In fib_heap_consolidate() Function
+---
 
-### Problem
+## 2. Unsafe traversal during consolidation (fib_heap_consolidate)
 
-FibNode *w = H->min;
-FibNode *start = w;
-do {
-    ...
-    w = w->right;
-} while (w != start);
+### Original Issue:
+Iterating directly over root list while linking nodes modifies the list and corrupts traversal.
 
-### Fixing
+### Fixed:
+Create a temporary array copy of the entire root list BEFORE modifying it:
 
-FibNode *w = H->min;
-FibNode *start = w;
-FibNode *next;
+Root list collected safely:
+FibNode **rootList = malloc(root_count * sizeof(FibNode*));
 
-do {
-    next = w->right;     // Safe backup
-    ...
-    w = next;
-} while (w != start);
+Then consolidate using the safe snapshot.
 
-## Children Moving To Root List Incorrectly In fib_heap_extract_min() Function
+---
 
-### Problem
+## 3. Incorrect array size for degree table A[] in consolidation
 
-x->left = H->min;
-x->right = H->min->right;
-
-Issue: You never detach child from its circular sibling list → circular child ring is left intact → root list gets corrupted → infinite loops or crashes.
-
-### Fixing
-
-Before adding a child to root list:
-
-x->left->right = x->right;
-x->right->left = x->left;
-
-Only then insert into root list.
-
-## Frees Circular List Incorrectly In free_node() Function
-
-### Problem
-
-do {
-    next = curr->right;
-    free(curr);
-    curr = next;
-} while (curr != start);
-
-Issue: You free a node while its right still points to freed memory → undefined behavior.
-
-### Fixing
-
-FibNode *start = node;
-FibNode *curr = start->right;
-
-// break circle
-start->left->right = NULL;
-
-while (curr != NULL) {
-    FibNode *next = curr->right;
-    if (curr->child) free_node(curr->child);
-    free(curr);
-    curr = next;
-}
-
-if (start->child) free_node(start->child);
-free(start);
-
-## Frees Input Heaps Incorrectly In fib_heap_union() Function
-
-### Problem
-
-free(H1);
-free(H2);
-
-### Fixing
-
-// free(H1);
-// free(H2);
-
-## Degree Array Size Is Too Small In fib_heap_consolidate() Function
-
-### Problem
-
+### Original:
 int D = (int)(log(H->n) / log(2)) + 1;
 
-### Fixing
+### Fixed:
+int D = (int)(log2(H->n)) + 10;
 
-int D = (int)(log(H->n) / log(1.61803)) + 2;
+Added margin to prevent overflow when linking repeatedly.
 
-## No NULL Checking In fib_heap_insert() Function
+---
 
-### Problem
+## 4. Incorrect linking of nodes in fib_heap_link()
 
-if (x->key < H->min->key)
+### Original Issue:
+Child insertion logic didn’t maintain circular list integrity.
 
-### Fixing
+### Fixed:
+Proper circular child insertion:
 
-if (H->min == NULL || x->key < H->min->key)
+if (x->child == NULL) {
+    x->child = y;
+    y->left = y->right = y;
+} else {
+    y->right = x->child->right;
+    y->left  = x->child;
+    x->child->right->left = y;
+    x->child->right = y;
+}
+
+---
+
+## 5. Incorrect child promotion during extract_min
+
+### Original Issue:
+Children inserted without resetting parent or mark flags.
+
+### Fixed:
+c->parent = NULL;
+insert_into_root(H, c);
+
+Ensures correctness for future decrease-key operations.
+
+---
+
+## 6. Unsafe circular list removal in extract_min
+
+### Original Issue:
+Root list removal corruption when z->right == z not handled correctly.
+
+### Fixed:
+if (z == z->right)
+    H->min = NULL;
+else {
+    H->min = z->right;
+    fib_heap_consolidate(H);
+}
+
+---
+
+## 7. fib_heap_cut() child removal bug
+
+### Original Issue:
+Child pointer not updated when the removed child is y->child.
+
+### Fixed:
+if (y->child == x)
+    y->child = x->right;
+
+---
+
+## 8. Missing mark reset after cut
+
+### Original:
+(no mark reset)
+
+### Fixed:
+x->mark = 0;
+
+---
+
+## 9. Missing deep search for decrease-key and delete
+
+### Added:
+FibNode* fib_heap_find(FibNode *root, int key);
+
+Used recursively:
+
+- In decrease-key
+- In delete
+
+---
+
+## 10. Union logic did not properly concatenate circular root lists
+
+### Original:
+Partially concatenated lists incorrectly.
+
+### Fixed:
+Proper circular list stitching:
+
+a->right->left = b->left;
+b->left->right = a->right;
+a->right = b;
+b->left = a;
+
+---
+
+## 11. Freeing nodes unsafely in fib_heap_free()
+
+### Original:
+free_node() double-freed child lists.
+
+### Fixed:
+Safe recursive freeing maintaining circular boundaries.
+
+---
+
+## 12. insert_into_root() rewritten for consistent safe insertion
+
+Centralized canonical root insertion logic:
+if (H->min == NULL) { ... } else { ... }
+
+---
+
+## 13. Consolidation uses temporary root list snapshot
+
+Avoids modifying list during iteration.
+
+---
+
+## 14. main.c updated with deep search + safe input handling
+
+New features:
+- fib_heap_find() used for decrease/delete
+- free(extracted_node)
+- No root-only search
+- Cleaner menu logic
+
+---
+
+## 15. Added protection to avoid using log(0)
+
+Consolidation only runs when H->n > 0.
+
+---
+
+## 16. General code cleanup and correctness improvements
+
+- Removed undefined behavior
+- Fixed circular list manipulations
+- Ensured correct parent-child relations
+- Ensured correct marking rules
+- Ensured proper rebuild of root list after consolidation
+
 
 
 
