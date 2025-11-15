@@ -192,35 +192,6 @@ if (H->min == NULL) { ... } else { ... }
 
 ---
 
-## 13. Consolidation uses temporary root list snapshot
-
-Avoids modifying list during iteration.
-
----
-
-## 14. main.c updated with deep search + safe input handling
-
-New features:
-- fib_heap_find() used for decrease/delete
-- free(extracted_node)
-- No root-only search
-- Cleaner menu logic
-
----
-
-## 15. Added protection to avoid using log(0)
-
-Consolidation only runs when H->n > 0.
-
----
-
-## 16. General code cleanup and correctness improvements
-
-- Removed undefined behavior
-- Fixed circular list manipulations
-- Ensured correct parent-child relations
-- Ensured correct marking rules
-- Ensured proper rebuild of root list after consolidation
 
 
 
