@@ -19,6 +19,20 @@ Firstly, we would like to thank our family and friends for their constant suppor
 
 Moreover, we would like to express our sincere gratitude to the Department of Computer Science, for allowing us to apply our expertise in this assignment, and for helping us develop the required knowledge to program using the C programming language for this project.
 
+# Time Complexity
+
+| Function              | Time Complexity    |
+| :--------------------:| :-----------------:|
+| fib_heap_insert       | O(1) amortized     |
+| fib_heap_min          | O(1)               |
+| fib_heap_union        | O(1)               |
+| fib_heap_extract_min  | O(log n) amortized |
+| fib_heap_consolidate  | O(log n)           |
+| fib_heap_decrease_key | O(1) amortized     |
+| fib_heap_delete       | O(log n) amortized |
+| fib_heap_find         | O(n)               |
+| fib_heap_print        | O(r)<=O(n)         |
+| fib_heap_free         | O(n)               |
 
 # Errors Found & Fixes Applied
 
