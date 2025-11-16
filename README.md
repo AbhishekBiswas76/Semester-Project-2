@@ -34,6 +34,28 @@ Moreover, we would like to express our sincere gratitude to the Department of Co
 | fib_heap_print        | O(r)<=O(n)         |
 | fib_heap_free         | O(n)               |
 
+# Operations on a Fibonacci Heap
+
+## Insertion and Minimum
+
+![](assets/min.png)
+
+## Union of Two Heaps
+
+![](assets/union.png)
+
+## Extracting the Minimum
+
+![](assets/extmin.png)
+
+## Decreasing a Key
+
+![](assets/deckey.png)
+
+## Deleting a Key
+
+![](assets/delkey.png)
+
 # Errors Found & Fixes Applied
 
 ## 1. Incorrect insertion into root list in fib_heap_insert()
@@ -191,8 +213,10 @@ Centralized canonical root insertion logic:
 if (H->min == NULL) { ... } else { ... }
 
 ---
+# References
 
+- "Fibonacci Heap: How it Works & Operations", *favtutor*. https://favtutor.com/blogs/fibonacci-heap-algorithm-operations-cpp-java-python
 
-
+# Thank You For Your Attention
 
 
